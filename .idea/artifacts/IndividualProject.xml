@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact name="IndividualProject">
+    <output-path>$PROJECT_DIR$/classes/artifacts/IndividualProject</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="IndividualProject" />
+        </element>
+        <element id="file-copy" path="$PROJECT_DIR$/src/main/webapp/WEB-INF/appengine-web.xml" />
+      </element>
+    </root>
+  </artifact>
+</component>
