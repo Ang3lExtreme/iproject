@@ -14,6 +14,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 
@@ -67,15 +68,27 @@ public class RegisterUser {
                 return Response.status(Status.BAD_REQUEST).entity("User already exist").build();
             }
             else {
-                user = Entity.newBuilder(userKey)
-                        .set("user_password", DigestUtils.sha512Hex(data.password)  )
-                        .set("user_email", data.email)
-                        .set("user_phone", "")
-                        .set("user_role", Roles.USER.toString())
-                        .set("user_state", State.ENABLED.toString())
-                        .set("user_profile", Prof.PUB.toString())
-                        .set("time_stamp", Timestamp.now()).build();
+                if(data.username.equalsIgnoreCase("ADMIN")){
+                    user = Entity.newBuilder(userKey)
+                            .set("user_password", DigestUtils.sha512Hex(data.password)  )
+                            .set("user_email", data.email)
+                            .set("user_phone", "")
+                            .set("user_role", Roles.SU.toString())
+                            .set("user_state", State.ENABLED.toString())
+                            .set("user_profile", Prof.PRIVY.toString())
+                            .set("time_stamp", Timestamp.now()).build();
+                }
+                else {
 
+                    user = Entity.newBuilder(userKey)
+                            .set("user_password", DigestUtils.sha512Hex(data.password))
+                            .set("user_email", data.email)
+                            .set("user_phone", "")
+                            .set("user_role", Roles.USER.toString())
+                            .set("user_state", State.ENABLED.toString())
+                            .set("user_profile", Prof.PUB.toString())
+                            .set("time_stamp", Timestamp.now()).build();
+                }
                 address = Entity.newBuilder(addressKey)
                         .set("user_address", "")
                         .set("user_compAddress","")
