@@ -11,7 +11,9 @@ public class Users  {
     public String password;
     public String confirmation;
 
+    public Users(){
 
+    }
 
     public Users(String username, String email, String password, String confirmation){
         this.username = username;

@@ -18,13 +18,6 @@ import java.util.Locale;
 import java.util.logging.Logger;
 
 
-enum Roles {
-    USER,
-    GBO,
-    GA,
-    SU
-}
-
 enum State {
     ENABLED,
     DISABLED

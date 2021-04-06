@@ -1,10 +1,9 @@
-C:\Users\Ang3lExtreme\new eclipse workspace\IndividualProject\src\main\java\pt\unl\fct\di\apdc\individualproject\util\SuperUser.java
+C:\Users\Ang3lExtreme\new eclipse workspace\IndividualProject\src\main\java\pt\unl\fct\di\apdc\individualproject\resources\Roles.java
 C:\Users\Ang3lExtreme\new eclipse workspace\IndividualProject\src\main\java\pt\unl\fct\di\apdc\individualproject\HelloAppEngine.java
 C:\Users\Ang3lExtreme\new eclipse workspace\IndividualProject\src\main\java\pt\unl\fct\di\apdc\individualproject\util\Users.java
 C:\Users\Ang3lExtreme\new eclipse workspace\IndividualProject\src\main\java\pt\unl\fct\di\apdc\individualproject\resources\RegisterUser.java
-C:\Users\Ang3lExtreme\new eclipse workspace\IndividualProject\src\main\java\pt\unl\fct\di\apdc\individualproject\util\BackOfficeUser.java
-C:\Users\Ang3lExtreme\new eclipse workspace\IndividualProject\src\main\java\pt\unl\fct\di\apdc\individualproject\util\BackendUser.java
-C:\Users\Ang3lExtreme\new eclipse workspace\IndividualProject\src\main\java\pt\unl\fct\di\apdc\individualproject\util\Address.java
-C:\Users\Ang3lExtreme\new eclipse workspace\IndividualProject\src\main\java\pt\unl\fct\di\apdc\individualproject\util\interfaces\User.java
-C:\Users\Ang3lExtreme\new eclipse workspace\IndividualProject\src\main\java\pt\unl\fct\di\apdc\individualproject\util\RegisterData.java
+C:\Users\Ang3lExtreme\new eclipse workspace\IndividualProject\src\main\java\pt\unl\fct\di\apdc\individualproject\resources\LoginUser.java
+C:\Users\Ang3lExtreme\new eclipse workspace\IndividualProject\src\main\java\pt\unl\fct\di\apdc\individualproject\util\AuthToken.java
+C:\Users\Ang3lExtreme\new eclipse workspace\IndividualProject\src\main\java\pt\unl\fct\di\apdc\individualproject\util\UsersJson.java
+C:\Users\Ang3lExtreme\new eclipse workspace\IndividualProject\src\main\java\pt\unl\fct\di\apdc\individualproject\util\LoginData.java
 C:\Users\Ang3lExtreme\new eclipse workspace\IndividualProject\src\main\java\pt\unl\fct\di\apdc\individualproject\filters\AdditionalResponseHeadersFilter.java
