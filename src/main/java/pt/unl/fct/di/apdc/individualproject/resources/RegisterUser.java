@@ -16,6 +16,23 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.logging.Logger;
 
+
+enum Roles {
+    USER,
+    GBO,
+    GA,
+    SU
+}
+
+enum State {
+    ENABLED,
+    DISABLED
+}
+
+enum Prof {
+    PUB, PRIVY
+}
+
 @Path("/register")
 public class RegisterUser {
     private static final Logger LOG = Logger.getLogger(RegisterUser.class.getName());
@@ -23,38 +40,6 @@ public class RegisterUser {
     private final Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
 
     public RegisterUser(){
-        createAdmin();
-    }
-
-    @POST
-    @Path("/init")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response createAdmin() {
-        LOG.fine("Initiating app creating admin");
-        Transaction txn = datastore.newTransaction();
-
-        try{
-            Key userKey = datastore.newKeyFactory().setKind("User").newKey("admin");
-            Entity user = txn.get(userKey);
-
-            if(user != null){
-                return Response.status(Status.ACCEPTED).entity("Admin already exist").build();
-            }
-            else {
-                user = Entity.newBuilder(userKey)
-                        .set("user_password", DigestUtils.sha512Hex("passfacil")  )
-                        .set("user_email", "admin@admin.com")
-                        .set("time_stamp", Timestamp.now()).build();
-            }
-            txn.add(user);
-            LOG.fine("Admin created");
-            txn.commit();
-            return Response.ok("{}").build();
-        } finally {
-            if(txn.isActive()) {
-                txn.rollback();
-            }
-        }
 
     }
 
@@ -63,29 +48,42 @@ public class RegisterUser {
     @Path("/v1")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerV1(Users data){
-        LOG.fine("Register attempt by user: "+ data.getUsername());
+        LOG.fine("Register attempt by user: "+ data.username);
 
         if(!validRegistration(data))
             return Response.status(Status.FORBIDDEN).entity("Incorrect information").build();
 
+        Key userKey = datastore.newKeyFactory().setKind("User").newKey(data.username);
+        Key addressKey = datastore.newKeyFactory().addAncestor(PathElement.of("User", data.username))
+                .setKind("Address").newKey(data.username);
+
         Transaction txn = datastore.newTransaction();
 
         try{
-            Key userKey = datastore.newKeyFactory().setKind("User").newKey(data.getUsername());
             Entity user = txn.get(userKey);
-
+            Entity address;
             if(user != null){
                 txn.rollback();
                 return Response.status(Status.BAD_REQUEST).entity("User already exist").build();
             }
             else {
                 user = Entity.newBuilder(userKey)
-                        .set("user_password", DigestUtils.sha512Hex(data.getPassword())  )
-                        .set("user_email", data.getEmail())
+                        .set("user_password", DigestUtils.sha512Hex(data.password)  )
+                        .set("user_email", data.email)
+                        .set("user_phone", "")
+                        .set("user_role", Roles.USER.toString())
+                        .set("user_state", State.ENABLED.toString())
+                        .set("user_profile", Prof.PUB.toString())
                         .set("time_stamp", Timestamp.now()).build();
+
+                address = Entity.newBuilder(addressKey)
+                        .set("user_address", "")
+                        .set("user_compAddress","")
+                        .set("user_location", "").build();
             }
-            txn.add(user);
-            LOG.fine("User registered" + data.getUsername());
+
+            txn.add(user,address);
+            LOG.fine("User registered" + data.username);
             txn.commit();
             return Response.ok("{}").build();
         } finally {
@@ -97,12 +95,12 @@ public class RegisterUser {
     }
 
     private boolean validRegistration(Users data) {
-        if(data.getPassword() == null || data.getConfirmation() == null || data.getEmail() == null ||
-                data.getUsername() == null)
+        if(data.password == null || data.confirmation == null || data.email == null ||
+                data.username == null)
             return false;
-        else if(!EmailValidator.getInstance().isValid(data.getEmail()))
+        else if(!EmailValidator.getInstance().isValid(data.email))
             return false;
-        else return data.getPassword().equals(data.getConfirmation());
+        else return data.password.equals(data.confirmation);
     }
 
 
