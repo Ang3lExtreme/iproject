@@ -2,14 +2,11 @@ package pt.unl.fct.di.apdc.individualproject.resources;
 
 import com.google.cloud.Timestamp;
 import com.google.cloud.datastore.*;
-import com.google.cloud.datastore.StructuredQuery.CompositeFilter;
-import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
 import com.google.gson.Gson;
 import org.apache.commons.codec.digest.DigestUtils;
 import pt.unl.fct.di.apdc.individualproject.util.AuthToken;
 import pt.unl.fct.di.apdc.individualproject.util.LoginData;
-import pt.unl.fct.di.apdc.individualproject.util.Users;
-import pt.unl.fct.di.apdc.individualproject.util.UsersJson;
+import pt.unl.fct.di.apdc.individualproject.util.RoleJson;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -83,15 +80,15 @@ public class LoginUser {
                     txn.put(log, ustats);
                     txn.commit();
 
-                    Query<Entity> query = Query.newEntityQueryBuilder()
-                            .setKind("User")
-                            .setFilter(PropertyFilter.eq("__key__",data.username)).build();
 
-                    QueryResults<Entity> result = datastore.run(query);
-                    String json = g.toJson(result);
-                    UsersJson ruser = new Gson().fromJson(json,UsersJson.class);
 
-                    AuthToken token = new AuthToken(data.username, ruser.user_role);
+                    String userRole = g.toJson(user.getValue("user_role"));
+                    RoleJson role = g.fromJson(userRole, RoleJson.class);
+
+
+
+
+                    AuthToken token = new AuthToken(data.username, role.value);
                     LOG.info("User '" + data.username + "' logged in successfully.");
                     return Response.ok(g.toJson(token)).build();
                 }
