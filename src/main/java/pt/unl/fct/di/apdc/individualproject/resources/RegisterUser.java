@@ -14,7 +14,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Locale;
 import java.util.logging.Logger;
 
 
@@ -31,7 +30,7 @@ enum Prof {
 public class RegisterUser {
     private static final Logger LOG = Logger.getLogger(RegisterUser.class.getName());
     private final Gson g = new Gson();
-    private final Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
+    public static final Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
 
     public RegisterUser(){
 
@@ -41,7 +40,7 @@ public class RegisterUser {
     @POST
     @Path("/v1")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response registerV1(Users data){
+    public static Response registerV1(Users data){
         LOG.fine("Register attempt by user: "+ data.username);
 
         if(!validRegistration(data))
@@ -61,27 +60,24 @@ public class RegisterUser {
                 return Response.status(Status.BAD_REQUEST).entity("User already exist").build();
             }
             else {
-                if(data.username.equalsIgnoreCase("ADMIN")){
-                    user = Entity.newBuilder(userKey)
-                            .set("user_password", DigestUtils.sha512Hex(data.password)  )
-                            .set("user_email", data.email)
-                            .set("user_phone", "")
-                            .set("user_role", Roles.SU.toString())
-                            .set("user_state", State.ENABLED.toString())
-                            .set("user_profile", Prof.PRIVY.toString())
-                            .set("time_stamp", Timestamp.now()).build();
-                }
-                else {
 
-                    user = Entity.newBuilder(userKey)
+                Roles role;
+                if(data.username.equalsIgnoreCase("ADMIN")){
+                   role = Roles.SU;
+                }
+                else{
+                    role = Roles.USER;
+                }
+
+                user = Entity.newBuilder(userKey)
                             .set("user_password", DigestUtils.sha512Hex(data.password))
                             .set("user_email", data.email)
                             .set("user_phone", "")
-                            .set("user_role", Roles.USER.toString())
+                            .set("user_role", role.toString())
                             .set("user_state", State.ENABLED.toString())
                             .set("user_profile", Prof.PUB.toString())
                             .set("time_stamp", Timestamp.now()).build();
-                }
+
                 address = Entity.newBuilder(addressKey)
                         .set("user_address", "")
                         .set("user_compAddress","")
@@ -100,7 +96,7 @@ public class RegisterUser {
 
     }
 
-    private boolean validRegistration(Users data) {
+    private static boolean validRegistration(Users data) {
         if(data.password == null || data.confirmation == null || data.email == null ||
                 data.username == null)
             return false;

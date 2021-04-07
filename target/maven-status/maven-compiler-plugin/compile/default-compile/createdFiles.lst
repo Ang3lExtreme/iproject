@@ -2,6 +2,8 @@ pt\unl\fct\di\apdc\individualproject\util\AuthToken.class
 pt\unl\fct\di\apdc\individualproject\resources\LoginUser.class
 pt\unl\fct\di\apdc\individualproject\util\LoginData.class
 pt\unl\fct\di\apdc\individualproject\util\RoleJson.class
+pt\unl\fct\di\apdc\individualproject\resources\BootstrapUser.class
 pt\unl\fct\di\apdc\individualproject\resources\Prof.class
 pt\unl\fct\di\apdc\individualproject\resources\State.class
 pt\unl\fct\di\apdc\individualproject\resources\Roles.class
+pt\unl\fct\di\apdc\individualproject\resources\RemoveUser.class
