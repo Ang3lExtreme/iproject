@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import org.apache.commons.validator.routines.EmailValidator;
 import pt.unl.fct.di.apdc.individualproject.resources.Prof;
 import pt.unl.fct.di.apdc.individualproject.resources.Roles;
+import pt.unl.fct.di.apdc.individualproject.resources.State;
 
 
 import java.util.logging.Logger;
@@ -112,5 +113,10 @@ public class Verification {
         || newrole.equalsIgnoreCase(Roles.USER.toString())
         || newrole.equalsIgnoreCase(Roles.SU.toString()));
 
+    }
+
+    public boolean stateWriteCorrect(String state) {
+        return (state.equalsIgnoreCase(State.ENABLED.toString())
+        || state.equalsIgnoreCase(State.DISABLED.toString()));
     }
 }

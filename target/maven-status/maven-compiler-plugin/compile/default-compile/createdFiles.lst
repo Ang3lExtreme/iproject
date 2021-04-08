@@ -6,5 +6,6 @@ pt\unl\fct\di\apdc\individualproject\resources\BootstrapUser.class
 pt\unl\fct\di\apdc\individualproject\util\Verification.class
 pt\unl\fct\di\apdc\individualproject\resources\Prof.class
 pt\unl\fct\di\apdc\individualproject\resources\State.class
+pt\unl\fct\di\apdc\individualproject\resources\ChangeState.class
 pt\unl\fct\di\apdc\individualproject\resources\Roles.class
 pt\unl\fct\di\apdc\individualproject\resources\RemoveUser.class

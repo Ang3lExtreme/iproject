@@ -26,7 +26,7 @@ public class ChangeRole {
 
 
     @PUT
-@Path("/v1/{username}/{newrole}")
+    @Path("/v1/{username}/{newrole}")
     public Response changeRole(AuthToken token, @PathParam("username") String username, @PathParam("newrole") String newrole){
         LOG.fine("Change role attempt by user: " + token.username);
         Verification v = new Verification();
