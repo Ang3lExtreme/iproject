@@ -4,11 +4,9 @@ package pt.unl.fct.di.apdc.individualproject.resources;
 import com.google.cloud.datastore.*;
 import com.google.gson.Gson;
 import pt.unl.fct.di.apdc.individualproject.util.AuthToken;
+import pt.unl.fct.di.apdc.individualproject.util.Verification;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.logging.Logger;
@@ -24,36 +22,55 @@ public class RemoveUser {
 
     }
 
-   /* @DELETE
-    @Path("/v1")
+    @POST
+    @Path("/v1/{toremove}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public Response removeV1(AuthToken token,String toremove){
+    public Response removeV1(@PathParam("toremove") String toremove,AuthToken token){
         LOG.fine("Remove attempt by user: " + token.username);
-        Key userKey = datastore.newKeyFactory().setKind("User").newKey(token.username);
+        Verification verification = new Verification();
+        if(toremove.equalsIgnoreCase("ADMIN"))
+            return Response.status(Response.Status.FORBIDDEN).entity("Cannot delete ADMIN").build();
 
-        if(!token.username.equals(toremove) && token.role.equals(Roles.USER.toString())) {
-            return Response.status(Response.Status.FORBIDDEN).entity("User cant do this").build();
+        if(!verification.VerifyToken(token)){
+            return Response.status(Response.Status.FORBIDDEN).entity("token expired please login again").build();
         }
-        else if(!token.username.equals(toremove)){
-            Key userToremoveKey = datastore.newKeyFactory().setKind("User").newKey(token.username);
+        LOG.fine("token is valid" + token.username);
+
+        if(!token.username.equals(toremove)){
+
+            if (!verification.VerifyHierarchy(token.role, toremove)) {
+                return Response.status(Response.Status.FORBIDDEN).entity("Is not possible to remove user").build();
+            }
+
         }
+
+        Key userToremove = datastore.newKeyFactory().setKind("User").newKey(toremove);
+        //deletar automaticamente o endereço do utilizador
+        Key userAddress = datastore.newKeyFactory().addAncestor(PathElement.of("User", toremove))
+                .setKind("Address").newKey(toremove);
+
         Transaction txn = datastore.newTransaction();
 
         try{
-           // Entity userKey = datastore.newKeyFactory().setKind("User").newKey(token.username);
+            Entity user = txn.get(userToremove);
+            if(user != null){
+                txn.delete(userToremove,userAddress);
+                txn.commit();
+                LOG.info("User '" + toremove+ "' removed successfully.");
+                return Response.ok("Deleted user successfully").build();
+            }
+            return Response.status(Response.Status.FORBIDDEN).entity("User dont exist").build();
 
-        }finally{
+
+        }finally {
             if (txn.isActive()) {
                 txn.rollback();
             }
         }
-        return null;
-    }*/
 
 
-
-
+    }
 
 
 

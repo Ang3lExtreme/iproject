@@ -17,6 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 @Path("/login")
@@ -38,8 +39,9 @@ public class LoginUser {
     public Response loginV1(LoginData data){
         LOG.fine("Login attempt by user: " + data.username);
         Key userKey = datastore.newKeyFactory().setKind("User").newKey(data.username);
-        Key logKey = datastore.allocateId(datastore.newKeyFactory().addAncestor(PathElement.of("User", data.username))
-                .setKind("UserTokens").newKey());
+        UUID idOne = UUID.randomUUID();
+        Key logKey = datastore.newKeyFactory().addAncestor(PathElement.of("User", data.username))
+                .setKind("UserTokens").newKey(String.valueOf(idOne));
 
         Transaction txn = datastore.newTransaction();
         try {
@@ -64,14 +66,14 @@ public class LoginUser {
                             .build();
 
 
-                AuthToken token = new AuthToken(logKey.getId().toString(),data.username, role.value, creationData,creationData+EXPIRATION_TIME  );
+                AuthToken token = new AuthToken(String.valueOf(idOne),data.username, role.value, creationData,creationData+EXPIRATION_TIME  );
 
                     txn.put(log);
                     txn.commit();
 
 
 
-                    LOG.info("User '" + data.username + "' logged in successfully.");
+                    LOG.info("User '" + data.username + "' logged in successfully. " + logKey);
                     return Response.ok(g.toJson(token)).build();
                 }
                 return Response.status(Response.Status.FORBIDDEN).entity("Password incorrect").build();

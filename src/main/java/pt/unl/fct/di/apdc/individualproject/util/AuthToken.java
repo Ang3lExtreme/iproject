@@ -10,6 +10,9 @@ public class AuthToken {
     public long creationData;
     public long expirationData;
 
+    public AuthToken(){}
+
+
 
     public AuthToken( String id,String username, String role, long creationData, long expirationData) {
         this.tokenID = id;
