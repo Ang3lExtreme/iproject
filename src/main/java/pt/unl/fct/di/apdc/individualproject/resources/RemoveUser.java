@@ -22,30 +22,30 @@ public class RemoveUser {
 
     }
 
-    @POST
+    @DELETE
     @Path("/v1/{toremove}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response removeV1(@PathParam("toremove") String toremove,AuthToken token){
         LOG.fine("Remove attempt by user: " + token.username);
-        Verification verification = new Verification();
+        Verification v = new Verification();
         if(toremove.equalsIgnoreCase("ADMIN"))
             return Response.status(Response.Status.FORBIDDEN).entity("Cannot delete ADMIN").build();
 
-        if(!verification.VerifyToken(token)){
+        if(!v.VerifyToken(token)){
             return Response.status(Response.Status.FORBIDDEN).entity("token expired please login again").build();
         }
         LOG.fine("token is valid" + token.username);
 
         if(!token.username.equals(toremove)){
 
-            if (!verification.VerifyHierarchy(token.role, toremove)) {
+            if (!v.VerifyHierarchy(token.role, toremove)) {
                 return Response.status(Response.Status.FORBIDDEN).entity("Is not possible to remove user").build();
             }
 
         }
 
-        Key userToremove = datastore.newKeyFactory().setKind("User").newKey(toremove);
+        Key userToremoveKey = datastore.newKeyFactory().setKind("User").newKey(toremove);
         //deletar automaticamente o endereço do utilizador
         Key userAddress = datastore.newKeyFactory().addAncestor(PathElement.of("User", toremove))
                 .setKind("Address").newKey(toremove);
@@ -53,9 +53,9 @@ public class RemoveUser {
         Transaction txn = datastore.newTransaction();
 
         try{
-            Entity user = txn.get(userToremove);
+            Entity user = txn.get(userToremoveKey);
             if(user != null){
-                txn.delete(userToremove,userAddress);
+                txn.delete(userToremoveKey,userAddress);
                 txn.commit();
                 LOG.info("User '" + toremove+ "' removed successfully.");
                 return Response.ok("Deleted user successfully").build();

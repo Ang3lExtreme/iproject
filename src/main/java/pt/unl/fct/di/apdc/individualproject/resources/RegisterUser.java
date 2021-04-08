@@ -8,6 +8,8 @@ import com.google.gson.Gson;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import pt.unl.fct.di.apdc.individualproject.util.Users;
+import pt.unl.fct.di.apdc.individualproject.util.Verification;
+
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -40,10 +42,10 @@ public class RegisterUser {
     @POST
     @Path("/v1")
     @Consumes(MediaType.APPLICATION_JSON)
-    public static Response registerV1(Users data){
+    public Response registerV1(Users data){
         LOG.fine("Register attempt by user: "+ data.username);
-
-        if(!validRegistration(data))
+        Verification v = new Verification();
+        if(!v.validRegistration(data))
             return Response.status(Status.FORBIDDEN).entity("Incorrect information").build();
 
         Key userKey = datastore.newKeyFactory().setKind("User").newKey(data.username);
@@ -96,14 +98,7 @@ public class RegisterUser {
 
     }
 
-    private static boolean validRegistration(Users data) {
-        if(data.password == null || data.confirmation == null || data.email == null ||
-                data.username == null)
-            return false;
-        else if(!EmailValidator.getInstance().isValid(data.email))
-            return false;
-        else return data.password.equals(data.confirmation);
-    }
+
 
 
 }

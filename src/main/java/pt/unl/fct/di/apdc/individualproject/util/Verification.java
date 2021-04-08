@@ -2,6 +2,7 @@ package pt.unl.fct.di.apdc.individualproject.util;
 
 import com.google.cloud.datastore.*;
 import com.google.gson.Gson;
+import org.apache.commons.validator.routines.EmailValidator;
 import pt.unl.fct.di.apdc.individualproject.resources.Roles;
 
 
@@ -84,4 +85,22 @@ public class Verification {
         }
 
     }
+
+    public boolean validRegistration(Users data) {
+        if(data.password == null || data.confirmation == null || data.email == null ||
+                data.username == null)
+            return false;
+        else if(!EmailValidator.getInstance().isValid(data.email))
+            return false;
+        else return data.password.equals(data.confirmation);
+    }
+    public boolean validRegistration(ChangesJson data) {
+        if(data.password == null || data.confirmation == null || data.email == null)
+            return false;
+        else if(!EmailValidator.getInstance().isValid(data.email))
+            return false;
+        else return data.password.equals(data.confirmation);
+    }
+
+
 }
