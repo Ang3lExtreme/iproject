@@ -3,6 +3,7 @@ package pt.unl.fct.di.apdc.individualproject.util;
 import com.google.cloud.datastore.*;
 import com.google.gson.Gson;
 import org.apache.commons.validator.routines.EmailValidator;
+import pt.unl.fct.di.apdc.individualproject.resources.Prof;
 import pt.unl.fct.di.apdc.individualproject.resources.Roles;
 
 
@@ -15,33 +16,33 @@ public class Verification {
 
     public Verification(){}
 
-    public boolean VerifyHierarchy(String userrole, String toremove) {
+    public boolean VerifyHierarchy(String userrole, String otheruser) {
         LOG.fine("Verifying Hierarchy");
 
-        Key toremoveKey = datastore.newKeyFactory().setKind("User").newKey(toremove);
+        Key otherUserKey = datastore.newKeyFactory().setKind("User").newKey(otheruser);
 
         Transaction txn = datastore.newTransaction();
 
         try {
-            Entity toremoveuser = txn.get(toremoveKey);
+            Entity toremoveuser = txn.get(otherUserKey);
 
             if (toremoveuser != null) {
-                String toRemoveRole = g.toJson(toremoveuser.getValue("user_role"));
+                String otherUserRole = (String) toremoveuser.getValue("user_role").get();
                 //role do utilizador a remover
-                RoleJson role = g.fromJson(toRemoveRole, RoleJson.class);
+
 
                 //nao podem ser da mesma role
-                if (userrole.equals(role.value)) {
+                if (userrole.equals(otherUserRole)) {
                     return false;
                 }
                 //SU > TODOS
                 else if (userrole.equals(Roles.SU.toString()))
                     return true;
                     //GA > GBO > USER
-                else if (userrole.equals(Roles.GA.toString()) && (role.value.equals(Roles.GBO.toString()) || role.value.equals(Roles.USER.toString())))
+                else if (userrole.equals(Roles.GA.toString()) && (otherUserRole.equals(Roles.GBO.toString()) || otherUserRole.equals(Roles.USER.toString())))
                     return true;
                     //GA > USER
-                else return userrole.equals(Roles.GBO.toString()) && role.value.equals(Roles.USER.toString());
+                else return userrole.equals(Roles.GBO.toString()) && otherUserRole.equals(Roles.USER.toString());
 
             }
             LOG.warning("User dont exist");
@@ -76,7 +77,7 @@ public class Verification {
                 return true;
 
             }
-            LOG.warning("user dont exist " + tokenkey);
+            LOG.warning("user kk dont exist " + tokenkey);
             return false;
         }finally{
             if (txn.isActive()) {
@@ -95,12 +96,21 @@ public class Verification {
         else return data.password.equals(data.confirmation);
     }
     public boolean validRegistration(ChangesJson data) {
-        if(data.password == null || data.confirmation == null || data.email == null)
+        if(data.lastpassword == null || data.newpassword == null|| data.confirmation == null || data.email == null)
             return false;
         else if(!EmailValidator.getInstance().isValid(data.email))
             return false;
-        else return data.password.equals(data.confirmation);
+        else if(!data.profile.equals(Prof.PUB.toString()) || data.profile.equals(Prof.PRIVY.toString()))
+            return false;
+        else return data.newpassword.equals(data.confirmation);
     }
 
 
+    public boolean roleWriteCorrect(String newrole) {
+        return (newrole.equalsIgnoreCase(Roles.GBO.toString())
+        || newrole.equalsIgnoreCase(Roles.GA.toString())
+        || newrole.equalsIgnoreCase(Roles.USER.toString())
+        || newrole.equalsIgnoreCase(Roles.SU.toString()));
+
+    }
 }

@@ -7,6 +7,7 @@ import com.google.cloud.datastore.*;
 import com.google.gson.Gson;
 import pt.unl.fct.di.apdc.individualproject.util.AuthToken;
 import pt.unl.fct.di.apdc.individualproject.util.ChangesJson;
+import pt.unl.fct.di.apdc.individualproject.util.TokenPlusChanges;
 import pt.unl.fct.di.apdc.individualproject.util.Verification;
 
 import javax.ws.rs.*;
@@ -21,10 +22,14 @@ public class ChangeAtr {
     public static final Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
 
     @PUT
-    @Path("/v1/")
+    @Path("/v1")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public Response changeAtr(AuthToken token, ChangesJson changes){
+    public Response changeAtr(TokenPlusChanges tokenchanges){
+        AuthToken token = new AuthToken(tokenchanges.tokenID,tokenchanges.username,tokenchanges.role,tokenchanges.creationData,tokenchanges.expirationData);
+        ChangesJson changes = new ChangesJson(tokenchanges.lastpassword, tokenchanges.newpassword,tokenchanges.confirmation,tokenchanges.email
+        ,tokenchanges.phone,tokenchanges.profile,tokenchanges.address,tokenchanges.compAddress,tokenchanges.location);
+
         LOG.fine("Register attempt by user: "+ token.username);
         Verification v = new Verification();
         if(!v.validRegistration(changes))
@@ -37,7 +42,7 @@ public class ChangeAtr {
         }
         LOG.fine("token is valid" + token.username);
 
-        Key userKey = datastore.newKeyFactory().setKind("User").newKey(token.tokenID);
+        Key userKey = datastore.newKeyFactory().setKind("User").newKey(token.username);
         Key userAddressKey = datastore.newKeyFactory().addAncestor(PathElement.of("User", token.username))
                 .setKind("Address").newKey(token.username);
 
@@ -47,11 +52,20 @@ public class ChangeAtr {
             Entity user = txn.get(userKey);
 
             if(user != null){
+                if(!user.getValue("user_password").get().equals(DigestUtils.sha512Hex(changes.lastpassword)))
+                    return Response.status(Response.Status.FORBIDDEN).entity("Last password incorrect").build();
+
+
+
+
                 user = Entity.newBuilder(userKey)
-                        .set("user_password", DigestUtils.sha512Hex(changes.password))
+                        .set("last_time_modified",Timestamp.now())
+                        .set("user_password", DigestUtils.sha512Hex(changes.newpassword))
                         .set("user_email", changes.email)
                         .set("user_phone", changes.phone)
-                        .set("user_profile", changes.profile).build();
+                        .set("user_profile", changes.profile)
+                        .set("user_role", token.role)
+                        .set("user_state", State.ENABLED.toString() ).build();
             Entity add = txn.get(userAddressKey);
             if(add != null){
                 add = Entity.newBuilder(userAddressKey)
@@ -65,7 +79,7 @@ public class ChangeAtr {
                 LOG.info("User '" + token.username+ "' changed attributes successfully.");
                 return Response.ok("Changed attributes successfully").build();
             }
-            return Response.status(Response.Status.FORBIDDEN).entity("User dont exist").build();
+            return Response.status(Response.Status.FORBIDDEN).entity("User dont oi exist " +userKey).build();
 
 
 

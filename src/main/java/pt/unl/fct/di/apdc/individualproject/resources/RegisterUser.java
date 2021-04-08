@@ -19,15 +19,6 @@ import javax.ws.rs.core.Response;
 import java.util.logging.Logger;
 
 
-enum State {
-    ENABLED,
-    DISABLED
-}
-
-enum Prof {
-    PUB, PRIVY
-}
-
 @Path("/register")
 public class RegisterUser {
     private static final Logger LOG = Logger.getLogger(RegisterUser.class.getName());
@@ -77,8 +68,8 @@ public class RegisterUser {
                             .set("user_phone", "")
                             .set("user_role", role.toString())
                             .set("user_state", State.ENABLED.toString())
-                            .set("user_profile", Prof.PUB.toString())
-                            .set("time_stamp", Timestamp.now()).build();
+                            .set("user_profile", Prof.PRIVY.toString())
+                            .set("last_time_modified", Timestamp.now()).build();
 
                 address = Entity.newBuilder(addressKey)
                         .set("user_address", "")

@@ -1,20 +1,15 @@
 package pt.unl.fct.di.apdc.individualproject.resources;
 
-import com.google.cloud.Timestamp;
 import com.google.cloud.datastore.*;
 import com.google.gson.Gson;
 import org.apache.commons.codec.digest.DigestUtils;
 import pt.unl.fct.di.apdc.individualproject.util.AuthToken;
 import pt.unl.fct.di.apdc.individualproject.util.LoginData;
-import pt.unl.fct.di.apdc.individualproject.util.RoleJson;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.UUID;
@@ -49,8 +44,8 @@ public class LoginUser {
 
             if (user != null) {
 
-                String userRole = g.toJson(user.getValue("user_role"));
-                RoleJson role = g.fromJson(userRole, RoleJson.class);
+                String userRole = (String) user.getValue("user_role").get();
+
 
 
                 String hashedPWD = user.getString("user_password");
@@ -60,20 +55,20 @@ public class LoginUser {
                 if (hashedPWD.equals(DigestUtils.sha512Hex(data.password))) {
                     Entity log = Entity.newBuilder(logKey)
                             .set("username", data.username)
-                            .set("role", role.value)
+                            .set("role", userRole)
                             .set("token_creation_data",creationData)
                             .set("token_expiration_data", creationData+EXPIRATION_TIME)
                             .build();
 
 
-                AuthToken token = new AuthToken(String.valueOf(idOne),data.username, role.value, creationData,creationData+EXPIRATION_TIME  );
+                AuthToken token = new AuthToken(String.valueOf(idOne),data.username, userRole, creationData,creationData+EXPIRATION_TIME  );
 
                     txn.put(log);
                     txn.commit();
 
 
 
-                    LOG.info("User '" + data.username + "' logged in successfully. " + logKey);
+                    LOG.info("User '" + data.username + "' logged in successfully. " );
                     return Response.ok(g.toJson(token)).build();
                 }
                 return Response.status(Response.Status.FORBIDDEN).entity("Password incorrect").build();
