@@ -48,7 +48,7 @@ public class ChangeRole {
             return Response.status(Response.Status.FORBIDDEN).entity("Is not possible to change user role").build();
         }
 
-        Key userKey = datastore.newKeyFactory().setKind("User").newKey(username.toLowerCase());
+        Key userKey = datastore.newKeyFactory().setKind("User").newKey(username);
 
         Transaction txn = datastore.newTransaction();
 

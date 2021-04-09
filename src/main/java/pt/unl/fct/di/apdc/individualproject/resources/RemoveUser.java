@@ -55,7 +55,7 @@ public class RemoveUser {
 
         }
 
-        Key userToremoveKey = datastore.newKeyFactory().setKind("User").newKey(toremove.toLowerCase());
+        Key userToremoveKey = datastore.newKeyFactory().setKind("User").newKey(toremove);
         //deletar automaticamente o endereço do utilizador
         Key userAddress = datastore.newKeyFactory().addAncestor(PathElement.of("User", toremove))
                 .setKind("Address").newKey(toremove);
