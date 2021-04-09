@@ -4,8 +4,8 @@ pt\unl\fct\di\apdc\individualproject\util\TokenPlusChanges.class
 pt\unl\fct\di\apdc\individualproject\util\LoginData.class
 pt\unl\fct\di\apdc\individualproject\resources\BootstrapUser.class
 pt\unl\fct\di\apdc\individualproject\util\Verification.class
-pt\unl\fct\di\apdc\individualproject\resources\Prof.class
-pt\unl\fct\di\apdc\individualproject\resources\State.class
+pt\unl\fct\di\apdc\individualproject\util\Roles.class
+pt\unl\fct\di\apdc\individualproject\util\State.class
 pt\unl\fct\di\apdc\individualproject\resources\ChangeState.class
-pt\unl\fct\di\apdc\individualproject\resources\Roles.class
+pt\unl\fct\di\apdc\individualproject\util\Prof.class
 pt\unl\fct\di\apdc\individualproject\resources\RemoveUser.class

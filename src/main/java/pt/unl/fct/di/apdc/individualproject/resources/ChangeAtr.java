@@ -5,10 +5,7 @@ import com.google.appengine.repackaged.org.apache.commons.codec.digest.DigestUti
 import com.google.cloud.Timestamp;
 import com.google.cloud.datastore.*;
 import com.google.gson.Gson;
-import pt.unl.fct.di.apdc.individualproject.util.AuthToken;
-import pt.unl.fct.di.apdc.individualproject.util.ChangesJson;
-import pt.unl.fct.di.apdc.individualproject.util.TokenPlusChanges;
-import pt.unl.fct.di.apdc.individualproject.util.Verification;
+import pt.unl.fct.di.apdc.individualproject.util.*;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

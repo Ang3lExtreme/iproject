@@ -9,6 +9,8 @@ import pt.unl.fct.di.apdc.individualproject.util.Verification;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 @Path("/remove")
@@ -55,6 +57,27 @@ public class RemoveUser {
         try{
             Entity user = txn.get(userToremoveKey);
             if(user != null){
+
+
+                Query<Entity> query = Query.newEntityQueryBuilder()
+                        .setKind("UserTokens")
+                        .setFilter(
+                                StructuredQuery.PropertyFilter.eq("username",toremove)
+                        ).build();
+
+
+                QueryResults<Entity> logs = datastore.run(query);
+
+                List<Key> loginKeys = new ArrayList();
+                logs.forEachRemaining(userlog -> {
+                    loginKeys.add(userlog.getKey());
+                });
+
+                for(Key k: loginKeys){
+                    LOG.info("deleted key " + k.toString());
+                    txn.delete(k);
+
+                }
                 txn.delete(userToremoveKey,userAddress);
                 txn.commit();
                 LOG.info("User '" + toremove+ "' removed successfully.");

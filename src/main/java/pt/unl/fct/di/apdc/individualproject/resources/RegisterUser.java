@@ -5,10 +5,8 @@ import com.google.appengine.repackaged.org.apache.commons.codec.digest.DigestUti
 import com.google.cloud.Timestamp;
 import com.google.cloud.datastore.*;
 import com.google.gson.Gson;
-import org.apache.commons.validator.routines.EmailValidator;
 
-import pt.unl.fct.di.apdc.individualproject.util.Users;
-import pt.unl.fct.di.apdc.individualproject.util.Verification;
+import pt.unl.fct.di.apdc.individualproject.util.*;
 
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.Consumes;
@@ -33,7 +31,7 @@ public class RegisterUser {
     @POST
     @Path("/v1")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response registerV1(Users data){
+    public static Response registerV1(Users data){
         LOG.fine("Register attempt by user: "+ data.username);
         Verification v = new Verification();
         if(!v.validRegistration(data))

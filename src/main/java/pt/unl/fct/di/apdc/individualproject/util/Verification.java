@@ -3,9 +3,6 @@ package pt.unl.fct.di.apdc.individualproject.util;
 import com.google.cloud.datastore.*;
 import com.google.gson.Gson;
 import org.apache.commons.validator.routines.EmailValidator;
-import pt.unl.fct.di.apdc.individualproject.resources.Prof;
-import pt.unl.fct.di.apdc.individualproject.resources.Roles;
-import pt.unl.fct.di.apdc.individualproject.resources.State;
 
 
 import java.util.logging.Logger;

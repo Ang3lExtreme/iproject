@@ -29,7 +29,7 @@ public class BootstrapUser {
     public void registerAdmin(){
         Users user = new Users("ADMIN","fc.luz@campus.fct.unl", DigestUtils.sha512Hex("adminpass"),
                 DigestUtils.sha512Hex("adminpass"));
-        //RegisterUser.registerV1(user);
+        RegisterUser.registerV1(user);
     }
 
 }

@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import org.apache.commons.codec.digest.DigestUtils;
 import pt.unl.fct.di.apdc.individualproject.util.AuthToken;
 import pt.unl.fct.di.apdc.individualproject.util.LoginData;
+import pt.unl.fct.di.apdc.individualproject.util.State;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -42,7 +43,7 @@ public class LoginUser {
         try {
             Entity user = txn.get(userKey);
 
-            if (user != null) {
+            if (user != null || user.getValue("user_state").get().equals(State.DISABLED.toString())) {
 
                 String userRole = (String) user.getValue("user_role").get();
 
@@ -73,7 +74,7 @@ public class LoginUser {
                 }
                 return Response.status(Response.Status.FORBIDDEN).entity("Password incorrect").build();
             }
-            return Response.status(Response.Status.FORBIDDEN).entity("User dont exist").build();
+            return Response.status(Response.Status.FORBIDDEN).entity("User dont exist or is disabled").build();
         }
 
         finally{
