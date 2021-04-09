@@ -12,31 +12,42 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
-import java.util.Locale;
 import java.util.logging.Logger;
 
+/**
+ * @author Frederico Luz 51162
+ * * INFO: Class to change user state to Disable or Enable
+ */
 @Path("/changestate")
 public class ChangeState {
     private static final Logger LOG = Logger.getLogger(ChangeState.class.getName());
     private final Gson g = new Gson();
     public static final Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
 
+    public ChangeState() {}
 
-    public ChangeState(){}
-
+    /**
+     * * INFO: Method to change user state to Disable or Enable
+     * * State must be Disable or Enable
+     * @param token
+     * @param username
+     * @param state
+     * @return
+     */
     @PUT
     @Path("/v1/{username}/{state}")
     public Response changeState(AuthToken token, @PathParam("username") String username,
-                                @PathParam("state") String state){
+                                @PathParam("state") String state) {
         LOG.fine("Change state attempt by user: " + token.username);
         Verification v = new Verification();
 
-        if(!v.VerifyToken(token)){
+        if (!v.VerifyToken(token)) {
             return Response.status(Response.Status.FORBIDDEN).entity("token expired please login again").build();
         }
         LOG.fine("token is valid" + token.username);
 
-        if(token.username.equalsIgnoreCase(username))
+        //por questao de segurança nenhum utilizador pode mudar o proprio estado
+        if (token.username.equalsIgnoreCase(username))
             return Response.status(Response.Status.FORBIDDEN).entity("Cannot change own state").build();
 
         if (!v.stateWriteCorrect(state) || !v.VerifyHierarchy(token.role, username)) {
@@ -49,17 +60,16 @@ public class ChangeState {
             Entity user = txn.get(userKey);
             if (user != null) {
 
-
                 user = Entity.newBuilder(userKey)
-                        .set("user_password", user.getValue("user_password").get().toString())
-                        .set("user_email", user.getValue("user_email").get().toString())
-                        .set("user_phone", user.getValue("user_phone").get().toString())
-                        .set("user_role", user.getValue("user_role").get().toString())
+                        .set("user_password", user.getString("user_password"))
+                        .set("user_email", user.getString("user_email"))
+                        .set("user_phone", user.getString("user_phone"))
+                        .set("user_role", user.getString("user_role"))
                         .set("user_state", state.toUpperCase())
-                        .set("user_profile", user.getValue("user_profile").get().toString())
+                        .set("user_profile", user.getString("user_profile"))
                         .set("last_time_modified", Timestamp.now()).build();
 
-                if(state.equalsIgnoreCase(State.DISABLED.toString())){
+                if (state.equalsIgnoreCase(State.DISABLED.toString())) {
                     RunQueries r = new RunQueries();
                     r.eliminateLogs(username);
                 }
@@ -71,14 +81,11 @@ public class ChangeState {
             }
             return Response.status(Response.Status.FORBIDDEN).entity("User dont exist").build();
 
-            }finally{
-                if (txn.isActive()) {
-                    txn.rollback();
-                }
+        } finally {
+            if (txn.isActive()) {
+                txn.rollback();
             }
         }
-
-
-
+    }
 
 }

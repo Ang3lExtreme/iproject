@@ -7,6 +7,10 @@ import org.apache.commons.validator.routines.EmailValidator;
 
 import java.util.logging.Logger;
 
+/**
+ * @author Frederico Luz 51162
+ * * INFO: This Class is made for usuals verifications
+ */
 public class Verification {
     private static final Logger LOG = Logger.getLogger(Verification.class.getName());
     private final Gson g = new Gson();
@@ -14,6 +18,13 @@ public class Verification {
 
     public Verification(){}
 
+    /**
+     * INFO: Verify hierarchy between users
+     * PS: Can be optimized
+     * @param userrole
+     * @param otheruser
+     * @return
+     */
     public boolean VerifyHierarchy(String userrole, String otheruser) {
         LOG.fine("Verifying Hierarchy");
 
@@ -27,7 +38,6 @@ public class Verification {
             if (toremoveuser != null) {
                 String otherUserRole = (String) toremoveuser.getValue("user_role").get();
                 //role do utilizador a remover
-
 
                 //nao podem ser da mesma role
                 if (userrole.equals(otherUserRole)) {
@@ -53,7 +63,11 @@ public class Verification {
         }
     }
 
-
+    /**
+     * INFO: Verify is token is valid
+     * @param token
+     * @return
+     */
     public boolean VerifyToken(AuthToken token){
         LOG.info("Verifying token");
         Key tokenkey = datastore.newKeyFactory().addAncestor(PathElement.of("User", token.username))
@@ -75,7 +89,7 @@ public class Verification {
                 return true;
 
             }
-            LOG.warning("user kk dont exist " + tokenkey);
+            LOG.warning("user dont exist " + tokenkey);
             return false;
         }finally{
             if (txn.isActive()) {
@@ -85,6 +99,11 @@ public class Verification {
 
     }
 
+    /**
+     * INFO: Verify if registration data is valid
+     * @param data
+     * @return
+     */
     public boolean validRegistration(Users data) {
         if(data.password == null || data.confirmation == null || data.email == null ||
                 data.username == null)
@@ -93,17 +112,27 @@ public class Verification {
             return false;
         else return data.password.equals(data.confirmation);
     }
-    public boolean validRegistration(ChangesJson data) {
+    
+    /**
+     * INFO: Verify if changes data is valid
+     * @param data
+     * @return
+     */
+    public boolean validChanges(ChangesJson data) {
         if(data.lastpassword == null || data.newpassword == null|| data.confirmation == null || data.email == null)
             return false;
         else if(!EmailValidator.getInstance().isValid(data.email))
             return false;
-        else if(!data.profile.equals(Prof.PUB.toString()) || data.profile.equals(Prof.PRIVY.toString()))
+        else if(!data.profile.equalsIgnoreCase(Prof.PUB.toString()) && !data.profile.equalsIgnoreCase(Prof.PRIV.toString()))
             return false;
         else return data.newpassword.equals(data.confirmation);
     }
 
-
+    /**
+     * INFO: Verify if role is wrote correctly
+     * @param newrole
+     * @return
+     */
     public boolean roleWriteCorrect(String newrole) {
         return (newrole.equalsIgnoreCase(Roles.GBO.toString())
         || newrole.equalsIgnoreCase(Roles.GA.toString())
@@ -112,6 +141,11 @@ public class Verification {
 
     }
 
+    /**
+     * INFO: Verify if state is wrote valid
+     * @param state
+     * @return
+     */
     public boolean stateWriteCorrect(String state) {
         return (state.equalsIgnoreCase(State.ENABLED.toString())
         || state.equalsIgnoreCase(State.DISABLED.toString()));

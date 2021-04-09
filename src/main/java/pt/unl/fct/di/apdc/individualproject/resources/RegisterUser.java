@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 
 import pt.unl.fct.di.apdc.individualproject.util.*;
 
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -16,7 +17,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.logging.Logger;
 
-
+/**
+ * @author Frederico Luz 51162
+ * * INFO: Class for register user
+ *
+ */
 @Path("/register")
 public class RegisterUser {
     private static final Logger LOG = Logger.getLogger(RegisterUser.class.getName());
@@ -27,14 +32,18 @@ public class RegisterUser {
 
     }
 
-
+    /**
+     * INFO: Method to register user
+     * @param data
+     * @return
+     */
     @POST
-    @Path("/v1")
+    @Path("/v1/{username}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public static Response registerV1(Users data){
+    public static Response registerV1(Users data, @PathParam("username") String username){
         LOG.fine("Register attempt by user: "+ data.username);
         Verification v = new Verification();
-        if(!v.validRegistration(data))
+        if(!v.validRegistration(data) && !username.equalsIgnoreCase(data.username))
             return Response.status(Status.FORBIDDEN).entity("Incorrect information").build();
 
         Key userKey = datastore.newKeyFactory().setKind("User").newKey(data.username);
@@ -66,7 +75,7 @@ public class RegisterUser {
                             .set("user_phone", "")
                             .set("user_role", role.toString())
                             .set("user_state", State.ENABLED.toString())
-                            .set("user_profile", Prof.PRIVY.toString())
+                            .set("user_profile", Prof.PRIV.toString()) //utilizador tem o perfil privado por default
                             .set("last_time_modified", Timestamp.now()).build();
 
                 address = Entity.newBuilder(addressKey)

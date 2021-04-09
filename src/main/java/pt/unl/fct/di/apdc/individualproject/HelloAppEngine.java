@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(
     name = "HelloAppEngine",
-    urlPatterns = {"/"}
+    urlPatterns = {"/hello"}
 )
 public class HelloAppEngine extends HttpServlet {
 

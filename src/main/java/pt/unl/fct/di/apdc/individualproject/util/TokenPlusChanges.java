@@ -1,6 +1,9 @@
 package pt.unl.fct.di.apdc.individualproject.util;
 
-
+/**
+ * @author Frederico Luz 51162
+ * * INFO: This class make a fusion between token info and changes info, but it can be optimized on future
+ */
 public class TokenPlusChanges {
     public String username;
     public String role;
@@ -20,7 +23,23 @@ public class TokenPlusChanges {
 
     public TokenPlusChanges(){}
 
-
+    /**
+     * * INFO: Constructor
+     * @param username
+     * @param role
+     * @param tokenID
+     * @param creationData
+     * @param expirationData
+     * @param email
+     * @param lastpassword
+     * @param newpassword
+     * @param confirmation
+     * @param profile
+     * @param address
+     * @param compAddress
+     * @param location
+     * @param phone
+     */
     public TokenPlusChanges(String username, String role, String tokenID,long creationData,
                             long expirationData, String email,String lastpassword,String newpassword,String confirmation,
                             String profile, String address, String compAddress, String location,

@@ -2,7 +2,6 @@ pt\unl\fct\di\apdc\individualproject\util\AuthToken.class
 pt\unl\fct\di\apdc\individualproject\resources\LoginUser.class
 pt\unl\fct\di\apdc\individualproject\util\TokenPlusChanges.class
 pt\unl\fct\di\apdc\individualproject\util\LoginData.class
-pt\unl\fct\di\apdc\individualproject\resources\BootstrapUser.class
 pt\unl\fct\di\apdc\individualproject\util\Verification.class
 pt\unl\fct\di\apdc\individualproject\util\Roles.class
 pt\unl\fct\di\apdc\individualproject\util\State.class

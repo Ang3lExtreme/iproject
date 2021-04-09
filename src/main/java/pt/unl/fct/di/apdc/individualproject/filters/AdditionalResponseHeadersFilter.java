@@ -6,11 +6,24 @@ import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 
+
+/**
+ * @author @João Leitão
+ *
+ *
+ * * INFO: Headers for HTTP Response
+ */
 @Provider
 public class AdditionalResponseHeadersFilter implements ContainerResponseFilter {
 	public AdditionalResponseHeadersFilter() {
 	}
 
+	/**
+	 *
+	 * @param requestContext
+	 * @param responseContext
+	 * @throws IOException
+	 */
 	@Override
 	public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext)
 			throws IOException {

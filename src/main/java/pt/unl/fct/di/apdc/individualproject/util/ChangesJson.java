@@ -1,7 +1,10 @@
 package pt.unl.fct.di.apdc.individualproject.util;
 
-import pt.unl.fct.di.apdc.individualproject.resources.ChangeAtr;
 
+/**
+ * @author Frederico Luz 51162
+ * Class to change user attributes
+ */
 public class ChangesJson {
     public String email;
     public String lastpassword;
@@ -17,6 +20,19 @@ public class ChangesJson {
 
     }
 
+    /**
+     * * INFO: Constructor
+     *
+     * @param lastpassword
+     * @param newpassword
+     * @param confirmation
+     * @param email
+     * @param phone
+     * @param profile
+     * @param address
+     * @param compAddress
+     * @param location
+     */
     public ChangesJson(String lastpassword,String newpassword,String confirmation,String email,String phone ,String profile
     ,String address, String compAddress, String location){
         this.lastpassword = lastpassword;

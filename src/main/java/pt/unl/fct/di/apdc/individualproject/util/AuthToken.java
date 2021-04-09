@@ -2,6 +2,10 @@ package pt.unl.fct.di.apdc.individualproject.util;
 
 import java.util.UUID;
 
+/**
+ * @author Frederico Luz 51162
+ * * INFO: Token Class
+ */
 public class AuthToken {
 
     public String username;
@@ -13,7 +17,15 @@ public class AuthToken {
     public AuthToken(){}
 
 
-
+    /**
+     * * Constructor
+     *
+     * @param id
+     * @param username
+     * @param role
+     * @param creationData
+     * @param expirationData
+     */
     public AuthToken( String id,String username, String role, long creationData, long expirationData) {
         this.tokenID = id;
         this.username = username;
