@@ -81,7 +81,11 @@ public class ChangeState {
             }
             return Response.status(Response.Status.FORBIDDEN).entity("User dont exist").build();
 
-        } finally {
+        }catch (Exception e){
+            txn.rollback();
+            LOG.severe(e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }  finally {
             if (txn.isActive()) {
                 txn.rollback();
             }

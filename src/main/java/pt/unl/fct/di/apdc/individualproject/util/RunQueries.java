@@ -4,6 +4,7 @@ import com.google.cloud.datastore.*;
 import com.google.datastore.v1.PropertyFilter;
 import com.google.gson.Gson;
 
+import javax.xml.ws.Response;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -75,7 +76,10 @@ public class RunQueries {
             });
 
             txn.commit();
-        } finally {
+        } catch (Exception e){
+            txn.rollback();
+            LOG.severe(e.getMessage());
+        }finally {
             if (txn.isActive()) {
                 txn.rollback();
             }
