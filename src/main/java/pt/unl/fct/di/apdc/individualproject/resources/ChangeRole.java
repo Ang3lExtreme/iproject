@@ -16,7 +16,6 @@ import java.util.logging.Logger;
 @Path("/changerole")
 public class ChangeRole {
     private static final Logger LOG = Logger.getLogger(ChangeRole.class.getName());
-    private final Gson g = new Gson();
     public static final Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
 
 
@@ -77,13 +76,11 @@ public class ChangeRole {
     }
 
     private boolean ValidRole(String modifierRole, String newrole) {
-            if(modifierRole.equals(Roles.SU.toString()))
+            if(modifierRole.equalsIgnoreCase(Roles.SU.toString()))
                 return true;
-            if(modifierRole.equals(Roles.GA.toString()) && newrole.equals(Roles.SU.toString()))
+            if(modifierRole.equalsIgnoreCase(Roles.GA.toString()) && newrole.equalsIgnoreCase(Roles.SU.toString()))
                 return false;
-            if(modifierRole.equals(Roles.GBO.toString()) && (newrole.equals(Roles.SU.toString()) || newrole.equals(Roles.GA.toString())))
-                return false;
-            else return false;
+        return !modifierRole.equalsIgnoreCase(Roles.GBO.toString()) || (!newrole.equalsIgnoreCase(Roles.SU.toString()) && !newrole.equalsIgnoreCase(Roles.GA.toString()));
 
 
 

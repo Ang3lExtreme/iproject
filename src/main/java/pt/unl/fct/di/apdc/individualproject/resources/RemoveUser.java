@@ -4,6 +4,7 @@ package pt.unl.fct.di.apdc.individualproject.resources;
 import com.google.cloud.datastore.*;
 import com.google.gson.Gson;
 import pt.unl.fct.di.apdc.individualproject.util.AuthToken;
+import pt.unl.fct.di.apdc.individualproject.util.RunQueries;
 import pt.unl.fct.di.apdc.individualproject.util.Verification;
 
 import javax.ws.rs.*;
@@ -59,25 +60,8 @@ public class RemoveUser {
             if(user != null){
 
 
-                Query<Entity> query = Query.newEntityQueryBuilder()
-                        .setKind("UserTokens")
-                        .setFilter(
-                                StructuredQuery.PropertyFilter.eq("username",toremove)
-                        ).build();
-
-
-                QueryResults<Entity> logs = datastore.run(query);
-
-                List<Key> loginKeys = new ArrayList();
-                logs.forEachRemaining(userlog -> {
-                    loginKeys.add(userlog.getKey());
-                });
-
-                for(Key k: loginKeys){
-                    LOG.info("deleted key " + k.toString());
-                    txn.delete(k);
-
-                }
+                RunQueries r = new RunQueries();
+                r.eliminateLogs(toremove);
                 txn.delete(userToremoveKey,userAddress);
                 txn.commit();
                 LOG.info("User '" + toremove+ "' removed successfully.");

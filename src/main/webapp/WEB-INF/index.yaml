@@ -1,5 +1,0 @@
-indexes:
-  - kind: UserTokens
-    ancestor: yes
-    properties:
-      - name: user_login_time

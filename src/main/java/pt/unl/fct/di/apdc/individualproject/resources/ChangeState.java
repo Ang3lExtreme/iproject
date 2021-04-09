@@ -4,6 +4,8 @@ import com.google.cloud.Timestamp;
 import com.google.cloud.datastore.*;
 import com.google.gson.Gson;
 import pt.unl.fct.di.apdc.individualproject.util.AuthToken;
+import pt.unl.fct.di.apdc.individualproject.util.RunQueries;
+import pt.unl.fct.di.apdc.individualproject.util.State;
 import pt.unl.fct.di.apdc.individualproject.util.Verification;
 
 import javax.ws.rs.PUT;
@@ -56,6 +58,11 @@ public class ChangeState {
                         .set("user_state", state.toUpperCase())
                         .set("user_profile", user.getValue("user_profile").get().toString())
                         .set("last_time_modified", Timestamp.now()).build();
+
+                if(state.equalsIgnoreCase(State.DISABLED.toString())){
+                    RunQueries r = new RunQueries();
+                    r.eliminateLogs(username);
+                }
 
                 txn.put(user);
                 txn.commit();

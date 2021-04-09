@@ -4,6 +4,7 @@ package pt.unl.fct.di.apdc.individualproject.resources;
 import com.google.cloud.datastore.*;
 import com.google.gson.Gson;
 import pt.unl.fct.di.apdc.individualproject.util.AuthToken;
+import pt.unl.fct.di.apdc.individualproject.util.RunQueries;
 import pt.unl.fct.di.apdc.individualproject.util.Verification;
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
 
@@ -54,25 +55,8 @@ public class LogOut {
                  * UserTokens
                  * WHERE username = 'admin'
                  */
-            Query<Entity> query = Query.newEntityQueryBuilder()
-                    .setKind("UserTokens")
-                    .setFilter(
-                            PropertyFilter.eq("username",username)
-                    ).build();
-
-
-            QueryResults<Entity> logs = datastore.run(query);
-
-                List<Key> loginKeys = new ArrayList();
-                logs.forEachRemaining(userlog -> {
-                    loginKeys.add(userlog.getKey());
-                });
-
-                for(Key k: loginKeys){
-                    LOG.info("deleted key " + k.toString());
-                    txn.delete(k);
-
-                }
+                RunQueries r = new RunQueries();
+                r.eliminateLogs(username);
                 txn.commit();
                 return Response.ok("Logout successfully").build();
 

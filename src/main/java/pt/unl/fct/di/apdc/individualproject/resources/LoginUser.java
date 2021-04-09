@@ -43,7 +43,7 @@ public class LoginUser {
         try {
             Entity user = txn.get(userKey);
 
-            if (user != null || user.getValue("user_state").get().equals(State.DISABLED.toString())) {
+            if (user != null && !user.getValue("user_state").get().equals(State.DISABLED.toString())) {
 
                 String userRole = (String) user.getValue("user_role").get();
 
